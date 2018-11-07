@@ -15,7 +15,8 @@ build
 .ipynb_checkpoints
 
 # data
-Project1-Write A Data Science Blog Post/original
+Project1-Write A Data Science Blog Post/original/
+Project1-Write A Data Science Blog Post/data/
 
 # bat
 *.bat
