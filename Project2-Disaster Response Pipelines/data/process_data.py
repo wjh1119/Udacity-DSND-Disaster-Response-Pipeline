@@ -27,7 +27,7 @@ def load_data(messages_filepath, categories_filepath):
     categories = pd.read_csv(categories_filepath,index_col='id')
 
     # merge datasets
-    df = pd.merge(messages,categories,on='id')
+    df = pd.merge(messages,categories,left_index=True,right_index=True)
     
     return df
 
@@ -67,10 +67,10 @@ def clean_data(df):
         categories[column] = categories[column].map(lambda x:int(x))
 
     # drop the original categories column from `df`
-    df = df.drop(columns=['categories'])
+    del df['categories']
 
     # concatenate the original dataframe with the new `categories` dataframe
-    df = pd.merge(df,categories,on='id')
+    df = pd.merge(df,categories,left_index=True,right_index=True)
 
     # drop duplicates
     df = df.drop_duplicates()
