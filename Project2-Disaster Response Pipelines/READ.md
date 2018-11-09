@@ -8,7 +8,7 @@
 
 ## 1. Installation <a name="installation"></a>  
 - nltk(3.3)
-- sklearn(0.19.2)
+- sklearn(0.19.1)
 - plotly(3.3.0)
 - The code should run with no issues using Python versions 3.*.
 
