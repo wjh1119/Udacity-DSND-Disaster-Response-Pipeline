@@ -25,10 +25,10 @@ Create a machine learning pipeline to categorize these events so that users can 
 > * **data/:** a Flask framework for presenting data
 
 ## 4. Results <a name="results"></a>  
-- You can see visualizations about data in the web app.
+- The web app shows visualizations about data.
 - The web app can use the trained model to input text and return classification results  
 #### **How to open the web app?**
-Run the following command in the app's directory to run your web app.  
+Run the following command in the app's directory to run the web app.  
     `python run.py`
 Then go to http://0.0.0.0:3001/
 
