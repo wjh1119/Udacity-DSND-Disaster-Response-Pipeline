@@ -20,6 +20,18 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 def tokenize(text):
+    ''' tokenize text
+
+    Parameters
+    -----------------------
+    text: str
+        test which needs to be tokenized
+
+    Returns
+    -----------------------
+    str: tokenized text
+    '''
+    
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -46,6 +58,11 @@ def index():
     # extract data needed for visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    # Number of each category
+    categories_df = df.iloc[:,3:]
+    categories_counts = list(categories_df.sum().sort_values(ascending=False))
+    categories_names = list(categories_df.sum().sort_values(ascending=False).keys())
     
     # create visuals
     graphs = [
@@ -64,6 +81,24 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=categories_names,
+                    y=categories_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Number of each category(Total:26215)',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "category"
                 }
             }
         }
