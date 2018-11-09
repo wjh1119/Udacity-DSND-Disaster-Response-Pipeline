@@ -12,19 +12,14 @@ nltk.download('wordnet') # download for lemmatization
 
 from nltk.tokenize import word_tokenize,sent_tokenize
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.pipeline import Pipeline,FeatureUnion
-
+from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer,TfidfTransformer
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier
-
 from sklearn.metrics import classification_report
-
-from sklearn.metrics import accuracy_score
 
 import pickle
 
@@ -32,6 +27,22 @@ stop_words = stopwords.words("english")
 lemmatizer = WordNetLemmatizer()
 
 def load_data(database_filepath):
+    '''load data from database
+
+    Parameters
+    ---------------------
+    database_filepath: str
+        the url of database
+
+    Returns
+    ---------------------
+    X: pd.DataFrame
+        df which including messages
+    Y: pd.DataFrame
+        df which including categories
+    category_names: list
+        names of categories
+    '''
     # load data from database
     engine = create_engine(database_filepath)
     df = pd.read_sql(sql='select * from DisasterResponse',con=engine)
@@ -42,6 +53,17 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    ''' tokenize text
+
+    Parameters
+    -----------------------
+    text: str
+        test which needs to be tokenized
+
+    Returns
+    -----------------------
+    str: tokenized text
+    '''
     # normalize case and remove punctuation
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     
@@ -55,6 +77,12 @@ def tokenize(text):
 
 
 def build_model():
+    ''' build model
+
+    Returns
+    -----------------------
+    model: model for prediction 
+    '''
     
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize, max_df=0.75)),
@@ -77,16 +105,32 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''evaluate model
+
+    Parameters
+    ------------------
+    model: model which needs to be evaluated
+    X_test: pd.DataFrame
+        df which including messages
+    Y_test: pd.DataFrame
+        df which including categories
+    category_names: list
+        names of categories
+
+    '''
     
     y_pred = model.predict(X_test)
     
+    # change data's type to DataFrame
     y_pred_df = pd.DataFrame(y_pred,columns=category_names,index=range(y_pred.shape[0]))
     y_test_df = pd.DataFrame(Y_test,columns=category_names,index=range(y_pred.shape[0]))
     y_test_df.fillna(0,inplace=True)
     y_test_df = y_test_df.applymap(lambda x:int(x))
 
+    # for each category
     for column in category_names:
-
+        
+        # show f1_score,persicion,recall
         curr_f1_report = classification_report(y_test_df[[column]],y_pred_df[[column]])
         print("*"*80)
         print("f1 score table for '%s' column:\n" %column)
@@ -95,6 +139,14 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    '''save model at model_filepath
+    Parameters
+    -------------------------
+    model: model 
+    model_filepath: str
+        the url of the file which saves model
+    '''
+
     model_pickle_file = open(model_filepath,'wb')
     pickle.dump(model,model_pickle_file)
 
