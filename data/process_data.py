@@ -61,13 +61,13 @@ def clean_data(df):
 
     for column in categories:
         # set each value to be the last character of the string
-        categories[column] = categories[column].map(lambda x:x[-1:])
+        categories[column] = categories[column].str[-1]
         
         # convert column from string to numeric
-        categories[column] = categories[column].map(lambda x:int(x))
+        categories[column] = categories[column].astype('int')
 
     # drop the original categories column from `df`
-    del df['categories']
+    df.drop('categories', axis=1, inplace=True)
 
     # concatenate the original dataframe with the new `categories` dataframe
     df = pd.merge(df,categories,left_index=True,right_index=True)
@@ -109,7 +109,7 @@ def main():
         print('Cleaning data...')
         df = clean_data(df)
         
-        print('Saving data...\n    DATABASE: {}'.format(database_filepath))
+        print('Saving data...\n    DATABASE: {}'.format('sqlite:///'+database_filename))
         save_data(df, database_filepath)
         
         print('Cleaned data saved to database!')
