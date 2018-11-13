@@ -93,7 +93,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Number of each category(Total:26215)',
+                'title': 'Data Distribution per Category(Total:26215)',
                 'yaxis': {
                     'title': "Count"
                 },
